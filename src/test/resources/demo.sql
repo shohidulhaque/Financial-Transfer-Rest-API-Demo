@@ -5,11 +5,11 @@
 DROP TABLE IF EXISTS AccountHolder;
 
 CREATE TABLE AccountHolder (
-                    Id LONG PRIMARY KEY AUTO_INCREMENT NOT NULL,
-                    FirstName VARCHAR(30) NOT NULL,
-                    LastName VARCHAR(30) NOT NULL,
-                    AccountHolderId VARCHAR(30) NOT NULL
-                    );
+  Id LONG PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  FirstName VARCHAR(30) NOT NULL,
+  LastName VARCHAR(30) NOT NULL,
+  AccountHolderId VARCHAR(30) NOT NULL
+);
 
 CREATE UNIQUE INDEX idx_ue on AccountHolder(AccountHolderId);
 
@@ -20,12 +20,12 @@ INSERT INTO AccountHolder (Id, AccountHolderId, FirstName, LastName) VALUES (3,'
 DROP TABLE IF EXISTS Account;
 
 CREATE TABLE Account (
-                      Id LONG PRIMARY KEY AUTO_INCREMENT NOT NULL,
-                      AccountNumber VARCHAR(30) NOT NULL,
-                      SortCode VARCHAR(8) NOT NULL,
-                      Balance DECIMAL(19,4) NOT NULL,
-                      AccountHolder LONG NOT NULL,
-                      FOREIGN KEY (AccountHolder) REFERENCES AccountHolder(Id) ON DELETE CASCADE
+  Id LONG PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  AccountNumber VARCHAR(30) NOT NULL,
+  SortCode VARCHAR(8) NOT NULL,
+  Balance DECIMAL(19,4) NOT NULL,
+  AccountHolder LONG NOT NULL,
+  FOREIGN KEY (AccountHolder) REFERENCES AccountHolder(Id) ON DELETE CASCADE
 );
 
 CREATE UNIQUE INDEX idx_acc on Account(AccountNumber);
@@ -38,13 +38,13 @@ INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('8752
 
 DROP TABLE IF EXISTS AccountTransfer;
 CREATE TABLE AccountTransfer(
-                        Id LONG PRIMARY KEY AUTO_INCREMENT NOT NULL,
-                        Amount DECIMAL(19,4) NOT NULL,
-                        FromAccountId LONG NOT NULL,
-                        ToAccountAccountId LONG NOT NULL,
-                        TransactionTime TIMESTAMP NOT NULL,
-                        FOREIGN KEY (FromAccountId) REFERENCES Account(Id),
-                        FOREIGN KEY (ToAccountAccountId) REFERENCES  Account(Id)
+  Id LONG PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  Amount DECIMAL(19,4) NOT NULL,
+  FromAccountId LONG NOT NULL,
+  ToAccountId LONG NOT NULL,
+  TransactionTime TIMESTAMP NOT NULL,
+  FOREIGN KEY (FromAccountId) REFERENCES Account(Id),
+  FOREIGN KEY (ToAccountId) REFERENCES  Account(Id)
 );
 
 --SET REFERENTIAL_INTEGRITY TRUE;
