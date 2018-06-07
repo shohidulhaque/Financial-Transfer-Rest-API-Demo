@@ -31,7 +31,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     private final static String SQL_GET_ALL_ACCOUNT = "SELECT * FROM Account";
     private final static String SQL_DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE Id = ?";
     private final static String SQL_DELETE_ACCOUNT_BY_ACCOUNT_NUMBER = "DELETE FROM Account WHERE AccountNumber = ?";
-    private final static String SQL_CREATE_TRANSACTION = "INSERT INTO AccountTransfer(Amount, FromAccountId, ToAccountAccountId, TransactionTime) VALUES (?,?,?,?)";
+    private final static String SQL_CREATE_TRANSACTION = "INSERT INTO AccountTransfer(Amount, FromAccountId, ToAccountId, TransactionTime) VALUES (?,?,?,?)";
     private final static BigDecimal ZERO = new BigDecimal(0).setScale(4, RoundingMode.HALF_EVEN);
     private static Logger log = Logger.getLogger(AccountRepositoryImpl.class);
 

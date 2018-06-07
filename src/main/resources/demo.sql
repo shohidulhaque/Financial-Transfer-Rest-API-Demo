@@ -41,10 +41,10 @@ CREATE TABLE AccountTransfer(
   Id LONG PRIMARY KEY AUTO_INCREMENT NOT NULL,
   Amount DECIMAL(19,4) NOT NULL,
   FromAccountId LONG NOT NULL,
-  ToAccountAccountId LONG NOT NULL,
+  ToAccountId LONG NOT NULL,
   TransactionTime TIMESTAMP NOT NULL,
   FOREIGN KEY (FromAccountId) REFERENCES Account(Id),
-  FOREIGN KEY (ToAccountAccountId) REFERENCES  Account(Id)
+  FOREIGN KEY (ToAccountId) REFERENCES  Account(Id)
 );
 
 --SET REFERENTIAL_INTEGRITY TRUE;
