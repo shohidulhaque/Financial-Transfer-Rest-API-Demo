@@ -17,38 +17,36 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class TransactionService {
 
-	private final RepositoryFactory repositoryFactory = RepositoryFactory.getRepositoryFactory();
+    private final RepositoryFactory repositoryFactory = RepositoryFactory.getRepositoryFactory();
 
-	/**
-	 * Transfer fund between two accounts.
-	 * @param transaction the transaction to be performed.
-	 * @return Response the result of attempting to process user transaction
-	 * @throws TransactionException if there are problems when a fund transfer is being performed.
-	 * @throws WebApplicationException if there is an error during a transaction.
-	 */
-	@POST
-	public Response transferFund(UserTransactionVO transaction) throws TransactionException, WebApplicationException {
+    /**
+     * Transfer fund between two accounts.
+     *
+     * @param transaction the transaction to be performed.
+     * @return Response the result of attempting to process user transaction
+     * @throws TransactionException    if there are problems when a fund transfer is being performed.
+     * @throws WebApplicationException if there is an error during a transaction.
+     */
+    @POST
+    public Response transferFund(UserTransactionVO transaction) throws TransactionException, WebApplicationException {
 
-			TransferAccountBalanceResponse update = repositoryFactory.getAccountRepository().transferAccountBalance(transaction);
-			if (update.getResultCount() == 2)
-			{
-				UserTransactionResponseVO userTransactionResponse =  new UserTransactionResponseVO(	TransactionException.ResponseCode.SUCCESS.name(),
-																			update.getAccountTransaction().getTransactionTime(),
-																			update.getAccountTransaction().getFromAccountNumber(),
-																			update.getAccountTransaction().getToAccountNumber(),
-																			update.getAccountTransaction().getAmount());
+        TransferAccountBalanceResponse update = repositoryFactory.getAccountRepository().transferAccountBalance(transaction);
+        if (update.getResultCount() == 2) {
+            UserTransactionResponseVO userTransactionResponse = new UserTransactionResponseVO(TransactionException.ResponseCode.SUCCESS.name(),
+                    update.getAccountTransaction().getTransactionTime(),
+                    update.getAccountTransaction().getFromAccountNumber(),
+                    update.getAccountTransaction().getToAccountNumber(),
+                    update.getAccountTransaction().getAmount());
 
-				return Response.status(Response.Status.OK)
-								.entity(userTransactionResponse)
-								.type(MediaType.APPLICATION_JSON)
-								.build();
+            return Response.status(Response.Status.OK)
+                    .entity(userTransactionResponse)
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
 
-			}
-			else
-				{
-				// transaction failed
-				throw new WebApplicationException("Transaction failed", Response.Status.BAD_REQUEST);
-			}
-	}
+        } else {
+            // transaction failed
+            throw new WebApplicationException("Transaction failed", Response.Status.BAD_REQUEST);
+        }
+    }
 
 }

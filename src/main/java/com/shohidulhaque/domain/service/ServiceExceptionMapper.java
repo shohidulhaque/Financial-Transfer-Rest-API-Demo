@@ -12,17 +12,17 @@ import java.util.Date;
 @Provider
 public class ServiceExceptionMapper implements ExceptionMapper<TransactionException> {
 
-	public ServiceExceptionMapper() {
-	}
+    public ServiceExceptionMapper() {
+    }
 
-	@Override
-	public Response toResponse(TransactionException transactionException) {
-		UserTransactionResponseVO  userTransactionResponse = new UserTransactionResponseVO(transactionException.getResponseCode(),
-																	new Date(),
-																	transactionException.getFromAccountNumber(),
-																	transactionException.getToAccountNumber(),
-																	transactionException.getAmount());
-		return Response.status(Response.Status.PRECONDITION_FAILED).entity(userTransactionResponse).type(MediaType.APPLICATION_JSON).build();
-	}
+    @Override
+    public Response toResponse(TransactionException transactionException) {
+        UserTransactionResponseVO userTransactionResponse = new UserTransactionResponseVO(transactionException.getResponseCode(),
+                new Date(),
+                transactionException.getFromAccountNumber(),
+                transactionException.getToAccountNumber(),
+                transactionException.getAmount());
+        return Response.status(Response.Status.PRECONDITION_FAILED).entity(userTransactionResponse).type(MediaType.APPLICATION_JSON).build();
+    }
 
 }

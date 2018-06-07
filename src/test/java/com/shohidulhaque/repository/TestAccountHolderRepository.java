@@ -46,7 +46,7 @@ public class TestAccountHolderRepository {
 
     @Test
     public void testCreateAccountHolder() throws TransactionException {
-        AccountHolder accountHolder = new AccountHolder( "64737647387", "Shohidul", "Haque");
+        AccountHolder accountHolder = new AccountHolder("64737647387", "Shohidul", "Haque");
         long id = repositoryFactory.getAccountHolderRepository().createAccountHolder(accountHolder);
         AccountHolder afterCreation = repositoryFactory.getAccountHolderRepository().getAccountHolderByAccountHolderId("64737647387");
         assertTrue(afterCreation.equals(accountHolder));

@@ -7,63 +7,60 @@ import java.math.BigDecimal;
  */
 public class TransactionException extends Exception {
 
-	public enum ResponseCode {
-		SUCCESS, FAILURE
-	}
+    String responseCode;
+    long fromId;
+    String fromAccountNumber;
+    long toId;
+    String toAccountNumber;
+    BigDecimal amount;
+    public TransactionException(String msg, String responseCode) {
+        this(msg, responseCode, -1, null, -1, null, null, null);
+    }
 
-	public String getResponseCode() {
-		return responseCode;
-	}
-	String responseCode;
+    public TransactionException(String msg, String responseCode, Throwable cause) {
+        this(msg, responseCode, -1, null, -1, null, null, cause);
+    }
 
-	long fromId;
-	String fromAccountNumber;
+    public TransactionException(String msg, String responseCode, long fromId, String fromAccountNumber, long toId, String toAccountNumber, BigDecimal amount) {
 
-	long toId;
-	String toAccountNumber;
+        this(msg, responseCode, fromId, fromAccountNumber, toId, toAccountNumber, amount, null);
+    }
 
-	BigDecimal amount;
+    public TransactionException(String msg, String responseCode, long fromId, String fromAccountNumber, long toId, String toAccountNumber, BigDecimal amount, Throwable cause) {
+        super(msg, cause);
+        this.responseCode = responseCode;
+        this.fromId = fromId;
+        this.fromAccountNumber = fromAccountNumber;
+        this.toId = toId;
+        this.toAccountNumber = toAccountNumber;
+        this.amount = amount;
+    }
 
-	public TransactionException(String msg, String responseCode){
-		this(msg, responseCode, -1, null, -1, null, null, null);
-	}
+    public String getResponseCode() {
+        return responseCode;
+    }
 
-	public TransactionException(String msg, String responseCode, Throwable cause){
-		this(msg, responseCode, -1, null, -1, null, null, cause);
-	}
+    public long getFromId() {
+        return fromId;
+    }
 
-	public TransactionException(String msg, String responseCode, long fromId, String fromAccountNumber, long toId, String toAccountNumber, BigDecimal amount) {
+    public String getFromAccountNumber() {
+        return fromAccountNumber;
+    }
 
-		this(msg,responseCode, fromId,fromAccountNumber, toId, toAccountNumber,amount, null);
-	}
+    public long getToId() {
+        return toId;
+    }
 
-	public TransactionException(String msg, String responseCode, long fromId, String fromAccountNumber, long toId, String toAccountNumber, BigDecimal amount, Throwable cause) {
-		super(msg, cause);
-		this.responseCode = responseCode;
-		this.fromId = fromId;
-		this.fromAccountNumber = fromAccountNumber;
-		this.toId = toId;
-		this.toAccountNumber = toAccountNumber;
-		this.amount = amount;
-	}
+    public String getToAccountNumber() {
+        return toAccountNumber;
+    }
 
-	public long getFromId() {
-		return fromId;
-	}
+    public BigDecimal getAmount() {
+        return amount;
+    }
 
-	public String getFromAccountNumber() {
-		return fromAccountNumber;
-	}
-
-	public long getToId() {
-		return toId;
-	}
-
-	public String getToAccountNumber() {
-		return toAccountNumber;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
+    public enum ResponseCode {
+        SUCCESS, FAILURE
+    }
 }

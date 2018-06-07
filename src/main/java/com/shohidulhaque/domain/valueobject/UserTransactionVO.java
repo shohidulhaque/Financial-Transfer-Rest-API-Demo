@@ -9,36 +9,33 @@ import java.math.BigDecimal;
  */
 public class UserTransactionVO {
 
-	/*needed for the json mapping libraries used.*/
-	public UserTransactionVO() {
-	}
+    @JsonProperty(required = true)
+    private BigDecimal amount;
+    @JsonProperty(required = true)
+    private String fromAccountNumber;
+    @JsonProperty(required = true)
+    private String toAccountNumber;
 
+    /*needed for the json mapping libraries used.*/
+    public UserTransactionVO() {
+    }
 
-	@JsonProperty(required = true)
-	private BigDecimal amount;
+    public UserTransactionVO(BigDecimal amount, String fromAccountNumber, String toAccountNumber) {
+        this.amount = amount;
+        this.fromAccountNumber = fromAccountNumber;
+        this.toAccountNumber = toAccountNumber;
+    }
 
-	@JsonProperty(required = true)
-	private String fromAccountNumber;
+    public BigDecimal getAmount() {
+        return amount;
+    }
 
-	@JsonProperty(required = true)
-	private String toAccountNumber;
+    public String getFromAccountNumber() {
+        return fromAccountNumber;
+    }
 
-	public UserTransactionVO(BigDecimal amount, String fromAccountNumber, String toAccountNumber) {
-		this.amount = amount;
-		this.fromAccountNumber = fromAccountNumber;
-		this.toAccountNumber = toAccountNumber;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public String getFromAccountNumber() {
-		return fromAccountNumber;
-	}
-
-	public String getToAccountNumber() {
-		return toAccountNumber;
-	}
+    public String getToAccountNumber() {
+        return toAccountNumber;
+    }
 
 }

@@ -10,20 +10,27 @@ import java.util.Date;
  */
 public class AccountTransferVO {
 
-    /*needed for the json mapping libraries used.*/
-    public AccountTransferVO(){};
-
     @JsonProperty(required = true)
     BigDecimal amount;
 
+    ;
     @JsonProperty(required = true)
     String fromAccountNumber;
-
     @JsonProperty
     String toAccountNumber;
-
     @JsonProperty
     Date transactionTime;
+
+    /*needed for the json mapping libraries used.*/
+    public AccountTransferVO() {
+    }
+
+    public AccountTransferVO(BigDecimal amount, String fromAccountNumber, String toAccountNumber, Date transactionTime) {
+        this.amount = amount;
+        this.fromAccountNumber = fromAccountNumber;
+        this.toAccountNumber = toAccountNumber;
+        this.transactionTime = transactionTime;
+    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -39,13 +46,6 @@ public class AccountTransferVO {
 
     public Date getTransactionTime() {
         return transactionTime;
-    }
-
-    public AccountTransferVO(BigDecimal amount, String fromAccountNumber, String toAccountNumber, Date transactionTime) {
-        this.amount = amount;
-        this.fromAccountNumber = fromAccountNumber;
-        this.toAccountNumber = toAccountNumber;
-        this.transactionTime = transactionTime;
     }
 
 }

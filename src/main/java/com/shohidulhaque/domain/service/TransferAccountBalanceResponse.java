@@ -5,16 +5,15 @@ import com.shohidulhaque.domain.valueobject.AccountTransferVO;
 
 public class TransferAccountBalanceResponse {
 
+    @JsonProperty
+    final AccountTransferVO accountTransaction;
+    @JsonProperty
+    final int resultCount;
+
     public TransferAccountBalanceResponse(AccountTransferVO accountTransaction, int resultCount) {
         this.accountTransaction = accountTransaction;
         this.resultCount = resultCount;
     }
-
-    @JsonProperty
-    final AccountTransferVO accountTransaction;
-
-    @JsonProperty
-    final int resultCount;
 
     public AccountTransferVO getAccountTransaction() {
         return accountTransaction;

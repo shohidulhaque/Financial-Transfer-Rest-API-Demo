@@ -11,10 +11,16 @@ import java.util.List;
 public interface AccountRepository {
 
     List<Account> getAllAccounts() throws TransactionException;
+
     Account getAccount(String accountNumber) throws TransactionException;
-    Account  getAccountById(long accountId) throws TransactionException;
+
+    Account getAccountById(long accountId) throws TransactionException;
+
     long createAccount(Account account) throws TransactionException;
+
     int deleteAccount(String accountNumber) throws TransactionException;
+
     int updateAccountBalance(String accountNumber, BigDecimal deltaAmount) throws TransactionException;
+
     TransferAccountBalanceResponse transferAccountBalance(UserTransactionVO userTransaction) throws TransactionException;
 }

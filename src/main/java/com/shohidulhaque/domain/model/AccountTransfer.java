@@ -22,7 +22,7 @@ public class AccountTransfer {
 
     Date transactionTime;
 
-    public AccountTransfer(long id, BigDecimal balance,long fromAccountId, long toAccountId, Date transactionTime) {
+    public AccountTransfer(long id, BigDecimal balance, long fromAccountId, long toAccountId, Date transactionTime) {
         this.id = id;
         this.balance = balance;
         this.fromAccountId = fromAccountId;

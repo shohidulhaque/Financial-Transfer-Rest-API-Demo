@@ -6,6 +6,7 @@ import com.shohidulhaque.Application;
 import com.shohidulhaque.domain.repository.RepositoryFactory;
 import com.shohidulhaque.domain.service.ServiceExceptionMapper;
 import com.shohidulhaque.domain.service.TransactionService;
+import com.shohidulhaque.domain.valueobject.UserTransactionVO;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -22,8 +23,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.shohidulhaque.domain.valueobject.UserTransactionVO;
-
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -38,7 +37,7 @@ public class TestTransactionService {
     protected static Server server = null;
     protected static PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
 
-    protected static HttpClient client ;
+    protected static HttpClient client;
     protected static RepositoryFactory repositoryFactory = RepositoryFactory.getRepositoryFactory();
     protected ObjectMapper mapper = new ObjectMapper();
     protected URIBuilder builder = new URIBuilder().setScheme("http").setHost("localhost:8084");
@@ -49,7 +48,7 @@ public class TestTransactionService {
         startServer();
         connManager.setDefaultMaxPerRoute(10);
         connManager.setMaxTotal(20);
-        client= HttpClients.custom()
+        client = HttpClients.custom()
                 .setConnectionManager(connManager)
                 .setConnectionManagerShared(true)
                 .build();
@@ -68,7 +67,7 @@ public class TestTransactionService {
             context.setContextPath("/");
             server.setHandler(context);
             ServletHolder servletHolder = context.addServlet(ServletContainer.class, "/*");
-            servletHolder.setInitParameter( Application.JERSEY_CONFIG_CLASS_NAMES,
+            servletHolder.setInitParameter(Application.JERSEY_CONFIG_CLASS_NAMES,
                     ServiceExceptionMapper.class.getCanonicalName() + "," +
                             TransactionService.class.getCanonicalName());
             server.start();
@@ -107,7 +106,6 @@ public class TestTransactionService {
         int statusCode = response.getStatusLine().getStatusCode();
         assertTrue(statusCode == Response.Status.PRECONDITION_FAILED.getStatusCode());
     }
-
 
 
 }
