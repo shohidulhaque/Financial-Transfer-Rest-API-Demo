@@ -234,7 +234,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             }
 
             if (targetAccount == null) {
-                throw new TransactionException("failed to lock account" + accountNumber, TransactionException.ResponseCode.FAILURE.name());
+                throw new TransactionException("failed to lock account " + accountNumber, TransactionException.ResponseCode.FAILURE.name());
             }
             // update account upon success locking
             BigDecimal balance = targetAccount.getBalance().add(deltaAmount);
@@ -330,7 +330,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             // check there is enough fund in source account
             BigDecimal delta = fromAccount.getBalance().subtract(userTransaction.getAmount());
             if (delta.compareTo(new BigDecimal(0).setScale(4, RoundingMode.HALF_EVEN)) < 0) {
-                throw new TransactionException("insufficient funds from source.", TransactionException.ResponseCode.FAILURE.name());
+                throw new TransactionException("insufficient funds from source.", TransactionException.ResponseCode.FAILURE.name(), accountTransferVO.getFromAccountNumber(), accountTransferVO.getToAccountNumber(), accountTransferVO.getAmount());
             }
 
             updateStatement = conn.prepareStatement(SQL_UPDATE_ACCOUNT_BALANCE_BY_ACCOUNT_NUMBER);

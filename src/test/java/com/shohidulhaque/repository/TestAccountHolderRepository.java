@@ -10,7 +10,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
+import static org.junit.Assert.assertNotEquals;
 
 public class TestAccountHolderRepository {
 
@@ -29,19 +30,20 @@ public class TestAccountHolderRepository {
     @Test
     public void testGetAllAccountHolders() throws TransactionException {
         List<AccountHolder> allAccounts = repositoryFactory.getAccountHolderRepository().getAllAccountHolders();
-        assertTrue(allAccounts.size() > 1);
+        assertTrue("more then one account should have been returned.",allAccounts.size() > 1);
     }
 
     @Test
     public void testGetAccountHolderByAccountHolderId() throws TransactionException {
         AccountHolder accountHolder = repositoryFactory.getAccountHolderRepository().getAccountHolderByAccountHolderId("123yangluo");
-        assertTrue(accountHolder.getAccountHolderId().equals("123yangluo"));
+        assertNotNull("account should have been returned.", accountHolder);
+        assertTrue("an account with the wrong account holder id was returned.",accountHolder.getAccountHolderId().equals("123yangluo"));
     }
 
     @Test
     public void testGetNonExistingAccountHolder() throws TransactionException {
         AccountHolder accountHolder = repositoryFactory.getAccountHolderRepository().getAccountHolderByAccountHolderId("11223123734343");
-        assertTrue(accountHolder == null);
+        assertTrue("no account should have been returned with the account holder id 11223123734343",accountHolder == null);
     }
 
     @Test
@@ -49,6 +51,7 @@ public class TestAccountHolderRepository {
         AccountHolder accountHolder = new AccountHolder("64737647387", "Shohidul", "Haque");
         long id = repositoryFactory.getAccountHolderRepository().createAccountHolder(accountHolder);
         AccountHolder afterCreation = repositoryFactory.getAccountHolderRepository().getAccountHolderByAccountHolderId("64737647387");
+        assertNotNull("the account holder has not been created", afterCreation);
         assertTrue(afterCreation.equals(accountHolder));
     }
 
@@ -56,15 +59,15 @@ public class TestAccountHolderRepository {
     public void testDeleteAccountHolder() throws TransactionException {
         int rowCount = repositoryFactory.getAccountHolderRepository().deleteAccountHolderByAccountHolderId("123liusisi");
         // assert one row(user) deleted
-        assertTrue(rowCount == 1);
+        assertNotEquals("account 123liusisi has not been deleted.",rowCount == 1);
         // assert user no longer there
-        assertTrue(repositoryFactory.getAccountHolderRepository().getAccountHolderByAccountHolderId("87523123") == null);
+        assertTrue("account 123liusisi still exist.",repositoryFactory.getAccountHolderRepository().getAccountHolderByAccountHolderId("87523123") == null);
     }
 
     @Test
     public void testDeleteNonExistingAccountHolder() throws TransactionException {
         int rowCount = repositoryFactory.getAccountHolderRepository().deleteAccountHolderByAccountHolderId("123liusisiLLO");
-        assertTrue(rowCount == 0);
+        assertTrue("found a account that should not exist.", rowCount == 0);
 
     }
 }

@@ -30,6 +30,7 @@ import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class TestTransactionService {
@@ -88,7 +89,7 @@ public class TestTransactionService {
         HttpResponse response = client.execute(request);
         int statusCode = response.getStatusLine().getStatusCode();
         System.out.println(response.getEntity().toString());
-        assertTrue(statusCode == 200);
+        assertEquals("the wrong status code was returned.",200, statusCode);
     }
 
     @Test
@@ -104,7 +105,7 @@ public class TestTransactionService {
         request.setEntity(entity);
         HttpResponse response = client.execute(request);
         int statusCode = response.getStatusLine().getStatusCode();
-        assertTrue(statusCode == Response.Status.PRECONDITION_FAILED.getStatusCode());
+        assertEquals("the wrong status code was returned.",Response.Status.PRECONDITION_FAILED.getStatusCode(), statusCode);
     }
 
 

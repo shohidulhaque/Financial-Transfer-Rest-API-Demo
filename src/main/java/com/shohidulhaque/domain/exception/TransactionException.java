@@ -17,6 +17,10 @@ public class TransactionException extends Exception {
         this(msg, responseCode, -1, null, -1, null, null, null);
     }
 
+    public TransactionException(String msg, String responseCode, String fromAccountNumber,  String toAccountNumber, BigDecimal amount) {
+        this(msg, responseCode, -1, fromAccountNumber, -1, toAccountNumber, amount, null);
+    }
+
     public TransactionException(String msg, String responseCode, Throwable cause) {
         this(msg, responseCode, -1, null, -1, null, null, cause);
     }
