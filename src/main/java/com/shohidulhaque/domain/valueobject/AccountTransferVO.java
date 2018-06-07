@@ -12,8 +12,6 @@ public class AccountTransferVO {
 
     @JsonProperty(required = true)
     BigDecimal amount;
-
-    ;
     @JsonProperty(required = true)
     String fromAccountNumber;
     @JsonProperty
