@@ -45,7 +45,7 @@ public class TransactionService {
 
         } else {
             // transaction failed
-            throw new WebApplicationException("Transaction failed", Response.Status.BAD_REQUEST);
+            throw new TransactionException("transaction failed. transfer has not changed two accounts during transaction.",TransactionException.ResponseCode.FAILURE.name());
         }
     }
 
