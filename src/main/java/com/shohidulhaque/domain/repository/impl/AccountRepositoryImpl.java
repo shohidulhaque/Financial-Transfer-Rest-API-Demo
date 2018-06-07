@@ -65,7 +65,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     /**
-     * Get account by accountNumber
+     * Get account by accountNumber.
      */
     public Account getAccount(String accountNumber) throws TransactionException {
         Connection conn = null;
@@ -96,7 +96,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     /**
-     * Get account by accountNumber
+     * Get account by account id.
      */
     public Account getAccountById(long accountId) throws TransactionException {
         Connection conn = null;
@@ -127,7 +127,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     /**
-     * Create account
+     * Create account.
      */
     public long createAccount(Account account) throws TransactionException {
         Connection conn = null;
@@ -175,7 +175,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     /**
-     * Delete account by id
+     * Delete account by account number.
      */
     public int deleteAccount(String accountNumber) throws TransactionException {
         Connection conn = null;
