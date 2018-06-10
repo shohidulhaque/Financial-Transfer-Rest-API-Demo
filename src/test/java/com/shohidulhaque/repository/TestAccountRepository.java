@@ -49,9 +49,9 @@ public class TestAccountRepository {
 
     @Test
     public void testGetAccountByAccountNumber() throws TransactionException {
-        Account account = repositoryFactory.getAccountRepository().findByPK("87523123");
-        assertNotNull("cannot find account 87523123", account);
-        assertEquals("cannot find account with account number 87523123", "87523123", account.getAccountNumber());
+        Account account = repositoryFactory.getAccountRepository().findByPK("21223123");
+        assertNotNull("cannot find account 21223123", account);
+        assertEquals("cannot find account with account number 21223123", "21223123", account.getAccountNumber());
     }
 
     @Test
@@ -59,8 +59,6 @@ public class TestAccountRepository {
         Account account = repositoryFactory.getAccountRepository().findByPK("11223123734343");
         assertTrue("account should not exist.",account == null);
     }
-
-
 
     @Test
     public void testDeleteAccount() throws TransactionException {
@@ -77,11 +75,22 @@ public class TestAccountRepository {
 
     }
 
-
     @Test(expected = TransactionException.class)
     public void testTransactionNotEnoughFund() throws TransactionException {
         BigDecimal amount = new BigDecimal(10000000).setScale(4, RoundingMode.HALF_EVEN);
         UserTransactionVO userTransaction = new UserTransactionVO(amount, "31223123", "21223123");
         repositoryFactory.getAccountRepository().transferAccountBalance(userTransaction);
+    }
+
+    @Test
+    public void testUpdateAccount() throws TransactionException{
+        Account acc = repositoryFactory.getAccountRepository().findByPK("87523123");
+        acc.setSortCode("236798");
+        acc.setAccountNumber("875231235");
+        acc.setBalance(new BigDecimal(10000000).setScale(4, RoundingMode.HALF_EVEN));
+        Account up = repositoryFactory.getAccountRepository().update(acc);
+        assertNotNull("account object is null.", up);
+        Account acc2 = repositoryFactory.getAccountRepository().findByPK("875231235");
+        assertEquals("account objects are different.", acc, acc2);
     }
 }

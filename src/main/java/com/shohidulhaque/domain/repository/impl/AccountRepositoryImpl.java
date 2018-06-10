@@ -22,21 +22,21 @@ import java.util.List;
 
 public class AccountRepositoryImpl implements AccountRepository {
 
-    private final static String SQL_GET_ACCOUNT_BY_ID = "SELECT * FROM Account WHERE Id = ? ";
     private final static String SQL_GET_ACCOUNT_BY_ACCOUNT_NUMBER = "SELECT * FROM Account WHERE AccountNumber = ? ";
-    private final static String SQL_LOCK_ACCOUNT_BY_ID = "SELECT * FROM Account WHERE Id = ? FOR UPDATE";
     private final static String SQL_LOCK_ACCOUNT_BY_ACCOUNT_NUMBER = "SELECT * FROM Account WHERE AccountNumber = ? FOR UPDATE";
+    private final static String SQL_LOCK_ACCOUNT_BY_ACCOUNT_ID = "SELECT * FROM Account WHERE ID = ? FOR UPDATE";
+
     private final static String SQL_CREATE_ACCOUNT = "INSERT INTO Account (AccountNumber, AccountHolder, SortCode, Balance) VALUES (?, ?, ?, ?)";
 
     private final static String SQL_UPDATE_ACCOUNT_BALANCE_BY_ACCOUNT_NUMBER = "UPDATE Account SET Balance = ? WHERE AccountNumber = ? ";
-    private final static String SQL_UPDATE_ACCOUNT = "UPDATE Account SET  AccountNumber = ?, SortCode = ?, Balance = ?";
-
+    private final static String SQL_UPDATE_ACCOUNT = "UPDATE Account SET  AccountNumber = ?, SortCode = ?, Balance = ? WHERE Id = ?";
 
     private final static String SQL_GET_ALL_ACCOUNT = "SELECT * FROM Account";
-    private final static String SQL_DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE Id = ?";
     private final static String SQL_DELETE_ACCOUNT_BY_ACCOUNT_NUMBER = "DELETE FROM Account WHERE AccountNumber = ?";
     private final static String SQL_CREATE_TRANSACTION = "INSERT INTO AccountTransfer(Amount, FromAccountId, ToAccountId, TransactionTime) VALUES (?,?,?,?)";
+
     private final static BigDecimal ZERO = new BigDecimal(0).setScale(4, RoundingMode.HALF_EVEN);
+
     private static Logger log = Logger.getLogger(AccountRepositoryImpl.class);
 
     /**
@@ -69,7 +69,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     /**
-     * Get account by accountNumber.
+     * Get account by account number.
      */
     public Account findByPK(String accountNumber) throws TransactionException {
         Connection conn = null;
@@ -118,7 +118,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                log.error("unable to account.");
+                log.error("unable to create account.");
                 throw new TransactionException("account could not be created.", TransactionException.ResponseCode.FAILURE.name());
             }
             generatedKeys = statement.getGeneratedKeys();
@@ -179,7 +179,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     /**
-     * Update account balance
+     * Update account balance.
      */
     public Account update(Account account) throws TransactionException {
         Connection conn = null;
@@ -191,8 +191,8 @@ public class AccountRepositoryImpl implements AccountRepository {
             conn = RepositoryFactory.getConnection();
             conn.setAutoCommit(false);
             // lock account for writing:
-            lockStatement = conn.prepareStatement(SQL_LOCK_ACCOUNT_BY_ACCOUNT_NUMBER);
-            lockStatement.setString(1, account.getAccountNumber());
+            lockStatement = conn.prepareStatement(SQL_LOCK_ACCOUNT_BY_ACCOUNT_ID);
+            lockStatement.setLong(1, account.getId());
             rs = lockStatement.executeQuery();
             if (rs.next()) {
                 targetAccount = new Account(
@@ -202,7 +202,7 @@ public class AccountRepositoryImpl implements AccountRepository {
                         rs.getString("SortCode"),
                         rs.getBigDecimal("Balance"));
                 if (log.isDebugEnabled())
-                    log.debug("updated account of " + targetAccount);
+                    log.debug("locked account" + targetAccount);
             }
 
             if (targetAccount == null) {
@@ -220,9 +220,10 @@ public class AccountRepositoryImpl implements AccountRepository {
 
             updateStatement = conn.prepareStatement(SQL_UPDATE_ACCOUNT);
 
-            updateStatement.setString(3, targetAccount.getAccountNumber());
+            updateStatement.setString(1, targetAccount.getAccountNumber());
             updateStatement.setString(2, targetAccount.getSortCode());
-            updateStatement.setBigDecimal(1, targetAccount.getBalance());
+            updateStatement.setBigDecimal(3, targetAccount.getBalance());
+            updateStatement.setLong(4, targetAccount.getId());
 
             updateStatement.executeUpdate();
             conn.commit();

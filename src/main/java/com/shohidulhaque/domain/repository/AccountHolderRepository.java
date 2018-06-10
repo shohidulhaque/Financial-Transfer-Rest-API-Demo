@@ -1,7 +1,6 @@
 package com.shohidulhaque.domain.repository;
 
 import com.shohidulhaque.domain.exception.TransactionException;
-import com.shohidulhaque.domain.model.Account;
 import com.shohidulhaque.domain.model.AccountHolder;
 
 import java.util.List;
@@ -48,39 +47,5 @@ public interface AccountHolderRepository extends CRUDRepository<String, AccountH
      * @throws TransactionException if is a problem deleting an account holder.
      */
     void delete(String accountHolderId) throws TransactionException;
-
-
-
-    /**
-     * Delete a account holder with an account holder id  from the repository.
-     * @param accountHolderId account holder id
-     * @return number of account holders deleted.
-     * @throws TransactionException if is a problem deleting an account holder.
-     */
-     //void deleteAccountHolderByAccountHolderId(String accountHolderId) throws TransactionException;
-
-    /**
-     * Create an account holder in the repository.
-     * @param accountHolder
-     * @return
-     * @throws TransactionException
-     */
-    //long createAccountHolder(AccountHolder accountHolder) throws TransactionException;
-
-    /**
-     * Update account holder in the repository.
-     * @param accountHolder account holder to update in the repository.
-     * @param accountHolder account holder to update.
-     * @return
-     * @throws TransactionException
-     */
-    //AccountHolder updateAccountHolder(AccountHolder accountHolder) throws TransactionException;
-
-
-    //TODO: DELETE
-    //AccountHolder getAccountHolderById(long userId) throws TransactionException;
-
-    //TODO: DELETE
-    //int deleteAccountHolder(long accounId) throws TransactionException;
 
 }

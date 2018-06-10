@@ -1,6 +1,7 @@
 package com.shohidulhaque.domain.repository.impl;
 
 import com.shohidulhaque.domain.exception.TransactionException;
+import com.shohidulhaque.domain.model.Account;
 import com.shohidulhaque.domain.model.AccountHolder;
 import com.shohidulhaque.domain.repository.AccountHolderRepository;
 import com.shohidulhaque.domain.repository.RepositoryFactory;
@@ -17,6 +18,7 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
     private final static String SQL_GET_ACCOUNT_HOLDER_BY_ID = "SELECT * FROM AccountHolder WHERE Id = ? ";
     private final static String SQL_DELETE_ACCOUNT_HOLDER_BY_ID = "DELETE FROM AccountHolder WHERE Id = ? ";
 
+    private final static String SQL_LOCK_ACCOUNT_BY_ACCOUNT_ID = "SELECT * FROM AccountHolder WHERE ID = ? FOR UPDATE";
     private final static String SQL_GET_ACCOUNT_HOLDER_BY_ACCOUNT_HOLDER_ID = "SELECT * FROM AccountHolder WHERE AccountHolderId = ? ";
     private final static String SQL_DELETE_ACCOUNT_HOLDER_BY_ACCOUNT_HOLDER_ID = "DELETE FROM AccountHolder WHERE AccountHolderId = ? ";
     private final static String SQL_GET_ALL_ACCOUNT_HOLDER = "SELECT * FROM AccountHolder";
@@ -130,12 +132,33 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
     public AccountHolder update(AccountHolder accountHolder) throws TransactionException {
         Connection conn = null;
         PreparedStatement statement = null;
-
+        PreparedStatement lockStatement = null;
+        ResultSet rs = null;
+        AccountHolder targetAccountHolder = null;
         try {
             conn = RepositoryFactory.getConnection();
             conn.setAutoCommit(false);
-            statement = conn.prepareStatement(SQL_UPDATE_ACCOUNT_HOLDER);
 
+            // lock account for writing:
+            lockStatement = conn.prepareStatement(SQL_LOCK_ACCOUNT_BY_ACCOUNT_ID);
+            lockStatement.setLong(1, accountHolder.getId());
+            rs = lockStatement.executeQuery();
+            if (rs.next()) {
+
+                targetAccountHolder = new AccountHolder(
+                        rs.getString("AccountHolderId"),
+                        rs.getString("FirstName"),
+                        rs.getString("LastName"));
+
+                if (log.isDebugEnabled())
+                    log.debug("locked account of " + targetAccountHolder);
+            }
+
+            if (targetAccountHolder == null) {
+                throw new TransactionException("failed to lock account " + targetAccountHolder.getAccountHolderId(), TransactionException.ResponseCode.FAILURE.name());
+            }
+
+            statement = conn.prepareStatement(SQL_UPDATE_ACCOUNT_HOLDER);
             statement.setString(1, accountHolder.getFirstName());
             statement.setString(2, accountHolder.getLastName());
             statement.setString(3, accountHolder.getAccountHolderId());

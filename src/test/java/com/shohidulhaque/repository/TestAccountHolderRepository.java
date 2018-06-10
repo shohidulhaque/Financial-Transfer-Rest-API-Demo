@@ -66,4 +66,21 @@ public class TestAccountHolderRepository {
         assertNull("found a account that should not exist.", acc);
 
     }
+
+    @Test
+    public void testUpdateAccountHolder() throws TransactionException {
+        AccountHolder u = repositoryFactory.getAccountHolderRepository().findByPK("5644565466");
+
+        u.setFirstName("TEST FIRST");
+        u.setLastName("TEST SECOND");
+        u.setAccountHolderId("0000000000");
+
+        AccountHolder accountHolderUpdate = repositoryFactory.getAccountHolderRepository().update(u);
+        assertTrue("account holder has not been updated.", u.equals(accountHolderUpdate));
+        AccountHolder acc = repositoryFactory.getAccountHolderRepository().findByPK("0000000000");
+        assertTrue("account holder has not been updated.", u.equals(acc));
+    }
+
+
+
 }
