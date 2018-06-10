@@ -8,19 +8,62 @@ import com.shohidulhaque.domain.valueobject.UserTransactionVO;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface AccountRepository {
+public interface AccountRepository extends  CRUDRepository<String, Account> {
 
-    List<Account> getAllAccounts() throws TransactionException;
 
-    Account getAccount(String accountNumber) throws TransactionException;
+    /**
+     * Find all account from the repository.
+     * @return all accounts.
+     * @throws TransactionException if there is problem during getting accounts.
+     */
+    List<Account> findAll() throws TransactionException;
 
-    Account getAccountById(long accountId) throws TransactionException;
+    /**
+     * Find an account using their account number from the repository.
+     * @param accountNumber find account by account number.
+     * @return account holder for account holder id.
+     * @throws TransactionException if there is a problem getting a account holder.
+     */
+    Account findByPK(String accountNumber) throws TransactionException;
 
-    long createAccount(Account account) throws TransactionException;
+    /**
+     * Create an account in the repository.
+     * @param account account to create.
+     * @return number of accounts created.
+     * @throws TransactionException if there is a problem getting a account holder.
+     */
+    Account create(Account account) throws TransactionException;
 
-    int deleteAccount(String accountNumber) throws TransactionException;
+    /**
+     * Delete an account with a account number from the repository.
+     * @param accountNumber account number
+     * @return number of account holders deleted.
+     * @throws TransactionException if there is a problem getting a account holder.
+     */
+    void delete(String accountNumber) throws TransactionException;
 
-    int updateAccountBalance(String accountNumber, BigDecimal deltaAmount) throws TransactionException;
 
+    /**
+     * Update account.
+     * @param account the account to update.
+     * @return the updated account.
+     * @throws TransactionException if there is a problem getting a account holder.
+     */
+    Account update(Account account) throws TransactionException;
+
+    /**
+     * Transfer funds between user accounts.
+     * @param userTransaction the transaction that needs to be performed.
+     * @return the transfer that has happened.
+     * @throws TransactionException if there is a problem getting a account holder.
+     */
     TransferAccountBalanceResponse transferAccountBalance(UserTransactionVO userTransaction) throws TransactionException;
+
+    //TODO: DELETE
+    //Account getAccountByAccountNumber(long accountId) throws TransactionException;
+
+    //TODO: DELETE
+    //int updateAccountBalance(String accountNumber, BigDecimal deltaAmount) throws TransactionException;
+
+
 }

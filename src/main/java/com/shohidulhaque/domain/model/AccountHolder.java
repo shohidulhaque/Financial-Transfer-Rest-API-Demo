@@ -48,6 +48,18 @@ public class AccountHolder {
         return lastName;
     }
 
+    public void setAccountHolderId(String accountHolderId) {
+        this.accountHolderId = accountHolderId;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public String toString() {
         return "AccountHolder{" +
@@ -63,15 +75,14 @@ public class AccountHolder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AccountHolder that = (AccountHolder) o;
-        return id == that.id &&
-                Objects.equals(accountHolderId, that.accountHolderId) &&
+        return  Objects.equals(accountHolderId, that.accountHolderId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountHolderId, firstName, lastName);
+        return Objects.hash(accountHolderId, firstName, lastName);
     }
 
     public long getId() {

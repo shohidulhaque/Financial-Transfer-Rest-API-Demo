@@ -27,7 +27,11 @@ public class AccountRepositoryImpl implements AccountRepository {
     private final static String SQL_LOCK_ACCOUNT_BY_ID = "SELECT * FROM Account WHERE Id = ? FOR UPDATE";
     private final static String SQL_LOCK_ACCOUNT_BY_ACCOUNT_NUMBER = "SELECT * FROM Account WHERE AccountNumber = ? FOR UPDATE";
     private final static String SQL_CREATE_ACCOUNT = "INSERT INTO Account (AccountNumber, AccountHolder, SortCode, Balance) VALUES (?, ?, ?, ?)";
+
     private final static String SQL_UPDATE_ACCOUNT_BALANCE_BY_ACCOUNT_NUMBER = "UPDATE Account SET Balance = ? WHERE AccountNumber = ? ";
+    private final static String SQL_UPDATE_ACCOUNT = "UPDATE Account SET  AccountNumber = ?, SortCode = ?, Balance = ?";
+
+
     private final static String SQL_GET_ALL_ACCOUNT = "SELECT * FROM Account";
     private final static String SQL_DELETE_ACCOUNT_BY_ID = "DELETE FROM Account WHERE Id = ?";
     private final static String SQL_DELETE_ACCOUNT_BY_ACCOUNT_NUMBER = "DELETE FROM Account WHERE AccountNumber = ?";
@@ -38,7 +42,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     /**
      * Get all accounts.
      */
-    public List<Account> getAllAccounts() throws TransactionException {
+    public List<Account> findAll() throws TransactionException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -67,7 +71,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     /**
      * Get account by accountNumber.
      */
-    public Account getAccount(String accountNumber) throws TransactionException {
+    public Account findByPK(String accountNumber) throws TransactionException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet rs = null;
@@ -89,47 +93,17 @@ public class AccountRepositoryImpl implements AccountRepository {
             }
             return account;
         } catch (SQLException e) {
-            throw new TransactionException("getAccountById(): Error reading account data", TransactionException.ResponseCode.FAILURE.name(), e);
+            throw new TransactionException("error reading account data.", TransactionException.ResponseCode.FAILURE.name(), e);
         } finally {
             DbUtils.closeQuietly(conn, statement, rs);
         }
     }
 
-    /**
-     * Get account by account id.
-     */
-    public Account getAccountById(long accountId) throws TransactionException {
-        Connection conn = null;
-        PreparedStatement statement = null;
-        ResultSet rs = null;
-        Account account = null;
-        try {
-            conn = RepositoryFactory.getConnection();
-            statement = conn.prepareStatement(SQL_GET_ACCOUNT_BY_ID);
-            statement.setLong(1, accountId);
-            rs = statement.executeQuery();
-            if (rs.next()) {
-                account = new Account(
-                        rs.getLong("Id"),
-                        rs.getLong("AccountHolder"),
-                        rs.getString("AccountNumber"),
-                        rs.getString("SortCode"),
-                        rs.getBigDecimal("Balance"));
-                if (log.isDebugEnabled())
-                    log.debug("accessed account with " + account);
-            }
-            return account;
-        } catch (SQLException e) {
-            throw new TransactionException("getAccountById(): Error reading account data", TransactionException.ResponseCode.FAILURE.name(), e);
-        } finally {
-            DbUtils.closeQuietly(conn, statement, rs);
-        }
-    }
 
     /**
      * Create account.
      */
-    public long createAccount(Account account) throws TransactionException {
+    public Account create(Account account) throws TransactionException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
@@ -151,7 +125,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             conn.commit();
             if (generatedKeys.next()) {
                 account.setId(generatedKeys.getLong(1));
-                return account.getId();
+                return account;
             } else {
                 log.error("unable to create an account, unable to obtain ID.");
                 throw new TransactionException("account could not be created.", TransactionException.ResponseCode.FAILURE.name());
@@ -177,7 +151,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     /**
      * Delete account by account number.
      */
-    public int deleteAccount(String accountNumber) throws TransactionException {
+    public void delete(String accountNumber) throws TransactionException {
         Connection conn = null;
         PreparedStatement statement = null;
         try {
@@ -185,9 +159,8 @@ public class AccountRepositoryImpl implements AccountRepository {
             conn.setAutoCommit(false);
             statement = conn.prepareStatement(SQL_DELETE_ACCOUNT_BY_ACCOUNT_NUMBER);
             statement.setString(1, accountNumber);
-            int numberOfRecordsChanged = statement.executeUpdate();
+            statement.executeUpdate();
             conn.commit();
-            return numberOfRecordsChanged;
         } catch (SQLException e) {
             // rollback transaction if exception occurs
             log.error("rollback initiated for " + accountNumber, e);
@@ -208,19 +181,18 @@ public class AccountRepositoryImpl implements AccountRepository {
     /**
      * Update account balance
      */
-    public int updateAccountBalance(String accountNumber, BigDecimal deltaAmount) throws TransactionException {
+    public Account update(Account account) throws TransactionException {
         Connection conn = null;
         PreparedStatement lockStatement = null;
         PreparedStatement updateStatement = null;
         ResultSet rs = null;
         Account targetAccount = null;
-        int updateCount = -1;
         try {
             conn = RepositoryFactory.getConnection();
             conn.setAutoCommit(false);
             // lock account for writing:
             lockStatement = conn.prepareStatement(SQL_LOCK_ACCOUNT_BY_ACCOUNT_NUMBER);
-            lockStatement.setString(1, accountNumber);
+            lockStatement.setString(1, account.getAccountNumber());
             rs = lockStatement.executeQuery();
             if (rs.next()) {
                 targetAccount = new Account(
@@ -234,30 +206,37 @@ public class AccountRepositoryImpl implements AccountRepository {
             }
 
             if (targetAccount == null) {
-                throw new TransactionException("failed to lock account " + accountNumber, TransactionException.ResponseCode.FAILURE.name());
+                throw new TransactionException("failed to lock account " + account.getAccountNumber(), TransactionException.ResponseCode.FAILURE.name());
             }
             // update account upon success locking
-            BigDecimal balance = targetAccount.getBalance().add(deltaAmount);
-            if (balance.compareTo(ZERO) < 0) {
-                throw new TransactionException("not sufficient fonds for " + accountNumber, TransactionException.ResponseCode.FAILURE.name());
+            //BigDecimal balance = targetAccount.getBalance().add(account.getBalance());
+            if (account.getBalance().compareTo(ZERO) < 0) {
+                throw new TransactionException("not sufficient fonds for " + account.getAccountNumber(), TransactionException.ResponseCode.FAILURE.name());
             }
 
-            updateStatement = conn.prepareStatement(SQL_UPDATE_ACCOUNT_BALANCE_BY_ACCOUNT_NUMBER);
-            updateStatement.setBigDecimal(1, balance);
-            updateStatement.setString(2, accountNumber);
-            updateCount = updateStatement.executeUpdate();
+            targetAccount.setBalance(account.getBalance());
+            targetAccount.setAccountNumber(account.getAccountNumber());
+            targetAccount.setSortCode(account.getSortCode());
+
+            updateStatement = conn.prepareStatement(SQL_UPDATE_ACCOUNT);
+
+            updateStatement.setString(3, targetAccount.getAccountNumber());
+            updateStatement.setString(2, targetAccount.getSortCode());
+            updateStatement.setBigDecimal(1, targetAccount.getBalance());
+
+            updateStatement.executeUpdate();
             conn.commit();
+
             if (log.isDebugEnabled())
                 log.debug("new balanace after update" + targetAccount);
-            return updateCount;
         } catch (SQLException se) {
             // rollback transaction if exception occurs
-            log.error("rollback initiated for " + accountNumber, se);
+            log.error("rollback initiated for " + targetAccount.getAccountNumber(), se);
             try {
                 if (conn != null)
                     conn.rollback();
             } catch (SQLException re) {
-                throw new TransactionException("failed to rollback transaction for account " + accountNumber, TransactionException.ResponseCode.FAILURE.name(), re);
+                throw new TransactionException("failed to rollback transaction for account " + account.getAccountNumber(), TransactionException.ResponseCode.FAILURE.name(), re);
             }
         } finally {
             DbUtils.closeQuietly(conn);
@@ -265,14 +244,12 @@ public class AccountRepositoryImpl implements AccountRepository {
             DbUtils.closeQuietly(lockStatement);
             DbUtils.closeQuietly(updateStatement);
         }
-        return updateCount;
+        return targetAccount;
     }
-
 
     /**
      * Transfer balance between two accounts.
      */
-
     public TransferAccountBalanceResponse transferAccountBalance(UserTransactionVO userTransaction) throws TransactionException {
         int result = -1;
         Connection conn = null;
@@ -376,6 +353,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             DbUtils.closeQuietly(updateStatement);
             DbUtils.closeQuietly(createTransactonStatment);
         }
+        //throw exception
         return new TransferAccountBalanceResponse(accountTransferVO, result);
     }
 

@@ -1,6 +1,7 @@
 package com.shohidulhaque.domain.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * A financial account.
@@ -77,6 +78,18 @@ public class Account {
         return accountHolderId;
     }
 
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public void setSortCode(String sortCode) {
+        this.sortCode = sortCode;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -86,5 +99,21 @@ public class Account {
                 ", sortCode='" + sortCode + '\'' +
                 ", balance=" + balance +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return  accountHolderId == account.accountHolderId &&
+                Objects.equals(accountNumber, account.accountNumber) &&
+                Objects.equals(sortCode, account.sortCode) &&
+                Objects.equals(balance, account.balance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountHolderId, accountNumber, sortCode, balance);
     }
 }
