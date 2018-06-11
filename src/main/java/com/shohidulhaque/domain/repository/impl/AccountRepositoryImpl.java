@@ -39,11 +39,11 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     private static final Logger log = Logger.getLogger(AccountRepositoryImpl.class);
 
-    private static final String Id = "Id";
-    private static final String AccountHolder = "AccountHolder";
-    private static final String AccountNumber = "AccountNumber";
-    private static final String SortCode = "SortCode";
-    private static final String Balance = "Balance";
+    private static final String ID = "ID";
+    private static final String ACCOUNT_HOLDER = "ACCOUNT_HOLDER";
+    private static final String ACCOUNT_NUMBER = "ACCOUNT_NUMBER";
+    private static final String SORT_CODE = "SORT_CODE";
+    private static final String BALANCE = "BALANCE";
 
     /**
      * Get all accounts.
@@ -59,11 +59,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             rs = stmt.executeQuery();
             while (rs.next()) {
                 Account acc = new Account(
-                        rs.getLong(Id),
-                        rs.getLong(AccountHolder),
-                        rs.getString(AccountNumber),
-                        rs.getString(SortCode),
-                        rs.getBigDecimal(Balance));
+                        rs.getLong(ID),
+                        rs.getLong(ACCOUNT_HOLDER),
+                        rs.getString(ACCOUNT_NUMBER),
+                        rs.getString(SORT_CODE),
+                        rs.getBigDecimal(BALANCE));
                 allAccounts.add(acc);
             }
             return allAccounts;
@@ -89,11 +89,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             rs = statement.executeQuery();
             if (rs.next()) {
                 account = new Account(
-                        rs.getLong(Id),
-                        rs.getLong(AccountHolder),
-                        rs.getString(AccountNumber),
-                        rs.getString(SortCode),
-                        rs.getBigDecimal(Balance));
+                        rs.getLong(ID),
+                        rs.getLong(ACCOUNT_HOLDER),
+                        rs.getString(ACCOUNT_NUMBER),
+                        rs.getString(SORT_CODE),
+                        rs.getBigDecimal(BALANCE));
                 if (log.isDebugEnabled())
                     log.debug("accessed account with " + account);
             }
@@ -203,11 +203,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             if (rs.next()) {
                 targetAccount = new Account(
 
-                        rs.getLong(Id),
-                        rs.getLong(AccountHolder),
-                        rs.getString(AccountNumber),
-                        rs.getString(SortCode),
-                        rs.getBigDecimal(Balance));
+                        rs.getLong(ID),
+                        rs.getLong(ACCOUNT_HOLDER),
+                        rs.getString(ACCOUNT_NUMBER),
+                        rs.getString(SORT_CODE),
+                        rs.getBigDecimal(BALANCE));
 
                 if (log.isDebugEnabled())
                     log.debug("locked account" + targetAccount);
@@ -239,7 +239,7 @@ public class AccountRepositoryImpl implements AccountRepository {
                 log.debug("new balanace after update" + targetAccount);
         } catch (SQLException se) {
             // rollback transaction if exception occurs
-            log.error("rollback initiated for " + targetAccount.getAccountNumber(), se);
+            log.error("rollback initiated for " + account.getAccountNumber(), se);
             try {
                 if (conn != null)
                     conn.rollback();
@@ -283,11 +283,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             rs = lockStatment.executeQuery();
             if (rs.next()) {
                 fromAccount = new Account(
-                        rs.getLong(Id),
-                        rs.getLong(AccountHolder),
-                        rs.getString(AccountNumber),
-                        rs.getString(SortCode),
-                        rs.getBigDecimal(Balance));
+                        rs.getLong(ID),
+                        rs.getLong(ACCOUNT_HOLDER),
+                        rs.getString(ACCOUNT_NUMBER),
+                        rs.getString(SORT_CODE),
+                        rs.getBigDecimal(BALANCE));
                 if (log.isDebugEnabled())
                     log.debug("locked account " + fromAccount);
             }
@@ -296,11 +296,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             rs = lockStatment.executeQuery();
             if (rs.next()) {
                 toAccount = new Account(
-                        rs.getLong(Id),
-                        rs.getLong(AccountHolder),
-                        rs.getString(AccountNumber),
-                        rs.getString(SortCode),
-                        rs.getBigDecimal(Balance));
+                        rs.getLong(ID),
+                        rs.getLong(ACCOUNT_HOLDER),
+                        rs.getString(ACCOUNT_NUMBER),
+                        rs.getString(SORT_CODE),
+                        rs.getBigDecimal(BALANCE));
                 if (log.isDebugEnabled())
                     log.debug("locked account " + toAccount);
             }

@@ -1,7 +1,6 @@
 package com.shohidulhaque.domain.repository.impl;
 
 import com.shohidulhaque.domain.exception.TransactionException;
-import com.shohidulhaque.domain.model.Account;
 import com.shohidulhaque.domain.model.AccountHolder;
 import com.shohidulhaque.domain.repository.AccountHolderRepository;
 import com.shohidulhaque.domain.repository.RepositoryFactory;
@@ -24,10 +23,10 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
 
     private static final Logger log = Logger.getLogger(AccountHolderRepositoryImpl.class);
 
-    private static final String Id = "Id";
-    private static final String AccountHolderId = "AccountHolderId";
-    private static final String FirstName = "FirstName";
-    private static final String LastName = "LastName";
+    private static final String ID = "ID";
+    private static final String ACCOUNT_HOLDER_ID = "ACCOUNT_HOLDER_ID";
+    private static final String FIRST_NAME = "FIRST_NAME";
+    private static final String LAST_NAME = "LAST_NAME";
 
     @Override
     public List<AccountHolder> findAll() throws TransactionException {
@@ -41,10 +40,10 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
             rs = stmt.executeQuery();
             while (rs.next()) {
                 AccountHolder u = new AccountHolder(
-                        rs.getLong(Id),
-                        rs.getString(AccountHolderId),
-                        rs.getString(FirstName),
-                        rs.getString(LastName));
+                        rs.getLong(ID),
+                        rs.getString(ACCOUNT_HOLDER_ID),
+                        rs.getString(FIRST_NAME),
+                        rs.getString(LAST_NAME));
                 users.add(u);
                 if (log.isDebugEnabled())
                     log.debug("retrieved account holder " + u);
@@ -70,10 +69,10 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
             rs = statement.executeQuery();
             if (rs.next()) {
                 ac = new AccountHolder(
-                        rs.getLong(Id),
-                        rs.getString(AccountHolderId),
-                        rs.getString(FirstName),
-                        rs.getString(LastName));
+                        rs.getLong(ID),
+                        rs.getString(ACCOUNT_HOLDER_ID),
+                        rs.getString(FIRST_NAME),
+                        rs.getString(LAST_NAME));
 
                 if (log.isDebugEnabled())
                     log.debug("Retrieve User: " + ac);
@@ -148,9 +147,9 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
             if (rs.next()) {
 
                 targetAccountHolder = new AccountHolder(
-                        rs.getString(AccountHolderId),
-                        rs.getString(FirstName),
-                        rs.getString(LastName));
+                        rs.getString(ACCOUNT_HOLDER_ID),
+                        rs.getString(FIRST_NAME),
+                        rs.getString(LAST_NAME));
 
                 if (log.isDebugEnabled())
                     log.debug("locked account of " + targetAccountHolder);
