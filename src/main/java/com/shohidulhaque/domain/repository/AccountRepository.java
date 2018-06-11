@@ -59,11 +59,4 @@ public interface AccountRepository extends  CRUDRepository<String, Account> {
      */
     TransferAccountBalanceResponse transferAccountBalance(UserTransactionVO userTransaction) throws TransactionException;
 
-    //TODO: DELETE
-    //Account getAccountByAccountNumber(long accountId) throws TransactionException;
-
-    //TODO: DELETE
-    //int updateAccountBalance(String accountNumber, BigDecimal deltaAmount) throws TransactionException;
-
-
 }

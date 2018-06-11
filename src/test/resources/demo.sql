@@ -25,28 +25,28 @@ CREATE TABLE Account (
   Id LONG PRIMARY KEY AUTO_INCREMENT NOT NULL,
   AccountNumber VARCHAR(30) NOT NULL,
   SortCode VARCHAR(8) NOT NULL,
-  Balance DECIMAL(19,4) NOT NULL,
+  Balance DECIMAL(19,2) NOT NULL,
   AccountHolder LONG NOT NULL,
   FOREIGN KEY (AccountHolder) REFERENCES AccountHolder(Id) ON DELETE CASCADE
 );
 
 CREATE UNIQUE INDEX idx_acc on Account(AccountNumber);
 
-INSERT INTO Account (Id, AccountNumber,SortCode,Balance, AccountHolder) VALUES (1,'112231237', '123456',100.0000,1);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('11223123', '123456',100.0000,1);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('21223123', '123456',200.0000,2);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('31223123', '123456',100.0000,3);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('87523123', '123456',500.0000,3);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('11111111', '123456',500.0000,3);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('10101010', '123456',500.0000,3);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('22222222', '123456',500.0000,3);
+INSERT INTO Account (Id, AccountNumber,SortCode,Balance, AccountHolder) VALUES (1,'112231237', '123456',100.00,1);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('11223123', '123456',100.00,1);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('21223123', '123456',200.00,2);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('31223123', '123456',100.00,3);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('87523123', '123456',500.00,3);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('11111111', '123456',500.00,3);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('10101010', '123456',500.00,3);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('22222222', '123456',500.00,3);
 -- used for lock test
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('20202020', '123456',500.0000,3);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('33333333', '123456',500.0000,3);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('30303030', '123456',500.0000,3);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('20202020', '123456',500.00,3);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('33333333', '123456',500.00,3);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('30303030', '123456',500.00,3);
 --used for multi threadded transfer
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('50505050', '123456',500.0000,3);
-INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('90909090', '123456',000.0000,3);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('50505050', '123456',500.00,3);
+INSERT INTO Account (AccountNumber,SortCode,Balance,AccountHolder) VALUES ('90909090', '123456',000.00,3);
 
 DROP TABLE IF EXISTS AccountTransfer;
 CREATE TABLE AccountTransfer(

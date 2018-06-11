@@ -21,12 +21,12 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
     private static final String SQL_CREATE_ACCOUNT_HOLDER = "INSERT INTO AccountHolder (AccountHolderId, FirstName, LastName) VALUES (?,?,?)";
     private static final String SQL_UPDATE_ACCOUNT_HOLDER = "UPDATE AccountHolder SET FirstName = ?, LastName = ?, AccountHolderId = ? WHERE Id = ? ";
 
-    private static final Logger log = Logger.getLogger(AccountHolderRepositoryImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(AccountHolderRepositoryImpl.class);
 
-    private static final String ID = "ID";
-    private static final String ACCOUNT_HOLDER_ID = "ACCOUNT_HOLDER_ID";
-    private static final String FIRST_NAME = "FIRST_NAME";
-    private static final String LAST_NAME = "LAST_NAME";
+    private static final String ID = "Id";
+    private static final String ACCOUNT_HOLDER_ID = "AccountHolderId";
+    private static final String FIRST_NAME = "FirstName";
+    private static final String LAST_NAME = "LastName";
 
     @Override
     public List<AccountHolder> findAll() throws TransactionException {
@@ -45,8 +45,8 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
                         rs.getString(FIRST_NAME),
                         rs.getString(LAST_NAME));
                 users.add(u);
-                if (log.isDebugEnabled())
-                    log.debug("retrieved account holder " + u);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("retrieved account holder " + u);
             }
             return users;
         } catch (SQLException e) {
@@ -74,8 +74,8 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
                         rs.getString(FIRST_NAME),
                         rs.getString(LAST_NAME));
 
-                if (log.isDebugEnabled())
-                    log.debug("Retrieve User: " + ac);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("Retrieve User: " + ac);
             }
             return ac;
         } catch (SQLException e) {
@@ -101,7 +101,7 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                log.error(" failed creating user " + accountHolder);
+                LOGGER.error(" failed creating user " + accountHolder);
                 throw new TransactionException("error when creating user " + accountHolder, TransactionException.ResponseCode.FAILURE.name());
             }
             generatedKeys = statement.getGeneratedKeys();
@@ -110,11 +110,11 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
                 accountHolder.setId(generatedKeys.getLong(1));
                 return accountHolder;
             } else {
-                log.error("error creating user failed, no ID generated for" + accountHolder);
+                LOGGER.error("error creating user failed, no ID generated for" + accountHolder);
                 throw new TransactionException("user was not created for " + accountHolder, TransactionException.ResponseCode.FAILURE.name());
             }
         } catch (SQLException e) {
-            log.error(" failed creating user " + accountHolder);
+            LOGGER.error(" failed creating user " + accountHolder);
 
             try {
                 if (conn != null)
@@ -151,8 +151,8 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
                         rs.getString(FIRST_NAME),
                         rs.getString(LAST_NAME));
 
-                if (log.isDebugEnabled())
-                    log.debug("locked account of " + targetAccountHolder);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("locked account of " + targetAccountHolder);
             }
 
             if (targetAccountHolder == null) {
@@ -174,7 +174,7 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
                 return accountHolder;
 
         } catch (SQLException e) {
-            log.error("error updating user " + accountHolder.getAccountHolderId());
+            LOGGER.error("error updating user " + accountHolder.getAccountHolderId());
             try {
                 if (conn != null)
                     conn.rollback();
@@ -199,7 +199,7 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
             statement.executeUpdate();
             conn.commit();
         } catch (SQLException e) {
-            log.error("error deleting user with id " + accountHolderId);
+            LOGGER.error("error deleting user with id " + accountHolderId);
 
             try {
                 if (conn != null)

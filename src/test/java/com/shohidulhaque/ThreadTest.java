@@ -44,7 +44,7 @@ public class ThreadTest {
 
         final AccountRepository accountRepository = repositoryFactory.getAccountRepository();
 
-        BigDecimal transferAmount = new BigDecimal(50).setScale(4, RoundingMode.HALF_EVEN);
+        BigDecimal transferAmount = new BigDecimal(50).setScale(2, RoundingMode.HALF_EVEN);
 
         UserTransactionVO transaction = new UserTransactionVO(transferAmount, "11111111", "10101010");
 
@@ -57,8 +57,8 @@ public class ThreadTest {
         Account accountFrom = accountRepository.findByPK("11111111");
         Account accountTo = accountRepository.findByPK("10101010");
 
-        assertTrue("from account has not been deducted from correctly ", accountFrom.getBalance().compareTo(new BigDecimal(450.0000).setScale(4, RoundingMode.HALF_EVEN)) == 0);
-        assertTrue("to account has not been deposited to correctly ",accountTo.getBalance().equals(new BigDecimal(550.0000).setScale(4, RoundingMode.HALF_EVEN)));
+        assertTrue("from account has not been deducted from correctly ", accountFrom.getBalance().compareTo(new BigDecimal(450.00).setScale(2, RoundingMode.HALF_EVEN)) == 0);
+        assertTrue("to account has not been deposited to correctly ",accountTo.getBalance().equals(new BigDecimal(550.00).setScale(2, RoundingMode.HALF_EVEN)));
 
     }
 
@@ -72,7 +72,7 @@ public class ThreadTest {
             new Thread(() -> {
                                 try {
                                         UserTransactionVO transaction = new UserTransactionVO(
-                                                                                new BigDecimal(10).setScale(4, RoundingMode.HALF_EVEN),
+                                                                                new BigDecimal(10).setScale(2, RoundingMode.HALF_EVEN),
                                                                                 "50505050",
                                                                                 "90909090"
                                                                                 );
@@ -96,8 +96,8 @@ public class ThreadTest {
 
         logger.debug("Account From: " + accountTo);
 
-        assertTrue(accountFrom.getBalance().equals(new BigDecimal(0).setScale(4, RoundingMode.HALF_EVEN)));
-        assertTrue(accountTo.getBalance().equals(new BigDecimal(500).setScale(4, RoundingMode.HALF_EVEN)));
+        assertTrue(accountFrom.getBalance().equals(new BigDecimal(0).setScale(2, RoundingMode.HALF_EVEN)));
+        assertTrue(accountTo.getBalance().equals(new BigDecimal(500).setScale(2, RoundingMode.HALF_EVEN)));
 
     }
 
@@ -133,7 +133,7 @@ public class ThreadTest {
             }
             // after lock account 5, try to transfer from account 6 to 5
             // default h2 timeout for acquire lock is 1sec
-            BigDecimal transferAmount = new BigDecimal(50).setScale(4, RoundingMode.HALF_EVEN);
+            BigDecimal transferAmount = new BigDecimal(50).setScale(2, RoundingMode.HALF_EVEN);
             UserTransactionVO transaction = new UserTransactionVO(transferAmount, "20202020", "33333333");
             repositoryFactory.getAccountRepository().transferAccountBalance(transaction);
             conn.commit();
@@ -152,7 +152,7 @@ public class ThreadTest {
         }
 
         // now inspect account 3 and 4 to verify no transaction occurred
-        BigDecimal originalBalance = new BigDecimal(500).setScale(4, RoundingMode.HALF_EVEN);
+        BigDecimal originalBalance = new BigDecimal(500).setScale(2, RoundingMode.HALF_EVEN);
         assertTrue("funds have been transferred.",repositoryFactory.getAccountRepository().findByPK("20202020").getBalance().equals(originalBalance));
 
     }

@@ -35,7 +35,7 @@ public class TestAccountRepository {
 
     @Test
     public void testCreateAccount() throws TransactionException {
-        BigDecimal balance = new BigDecimal(10).setScale(4, RoundingMode.HALF_EVEN);
+        BigDecimal balance = new BigDecimal(10).setScale(2, RoundingMode.HALF_EVEN);
         Account a = new Account(1L, "01122312373434309", "434567", balance);
         repositoryFactory.getAccountRepository().create(a);
         assertNotEquals ("the wrong account has been returned.", a.getId(), -1);
@@ -77,7 +77,7 @@ public class TestAccountRepository {
 
     @Test(expected = TransactionException.class)
     public void testTransactionNotEnoughFund() throws TransactionException {
-        BigDecimal amount = new BigDecimal(10000000).setScale(4, RoundingMode.HALF_EVEN);
+        BigDecimal amount = new BigDecimal(10000000).setScale(2, RoundingMode.HALF_EVEN);
         UserTransactionVO userTransaction = new UserTransactionVO(amount, "31223123", "21223123");
         repositoryFactory.getAccountRepository().transferAccountBalance(userTransaction);
     }
@@ -87,7 +87,7 @@ public class TestAccountRepository {
         Account acc = repositoryFactory.getAccountRepository().findByPK("87523123");
         acc.setSortCode("236798");
         acc.setAccountNumber("875231235");
-        acc.setBalance(new BigDecimal(10000000).setScale(4, RoundingMode.HALF_EVEN));
+        acc.setBalance(new BigDecimal(10000000).setScale(2, RoundingMode.HALF_EVEN));
         Account up = repositoryFactory.getAccountRepository().update(acc);
         assertNotNull("account object is null.", up);
         Account acc2 = repositoryFactory.getAccountRepository().findByPK("875231235");

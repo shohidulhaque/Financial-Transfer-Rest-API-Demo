@@ -78,7 +78,7 @@ public class TestTransactionService {
     @Test
     public void testTransactionEnoughFund() throws IOException, URISyntaxException {
         URI uri = builder.setPath("/transaction/v1/").build();
-        BigDecimal amount = new BigDecimal(10).setScale(4, RoundingMode.HALF_EVEN);
+        BigDecimal amount = new BigDecimal(10).setScale(2, RoundingMode.HALF_EVEN);
         UserTransactionVO transaction = new UserTransactionVO(amount, "31223123", "21223123");
 
         String jsonInString = mapper.writeValueAsString(transaction);
@@ -95,7 +95,7 @@ public class TestTransactionService {
     @Test
     public void testTransactionNotEnoughFund() throws IOException, URISyntaxException {
         URI uri = builder.setPath("/transaction/v1/").build();
-        BigDecimal amount = new BigDecimal(10000000).setScale(4, RoundingMode.HALF_EVEN);
+        BigDecimal amount = new BigDecimal(10000000).setScale(2, RoundingMode.HALF_EVEN);
         UserTransactionVO transaction = new UserTransactionVO(amount, "31223123", "21223123");
 
         String jsonInString = mapper.writeValueAsString(transaction);

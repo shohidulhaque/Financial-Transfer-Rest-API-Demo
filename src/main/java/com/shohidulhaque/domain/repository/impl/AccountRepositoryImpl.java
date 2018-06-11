@@ -35,14 +35,14 @@ public class AccountRepositoryImpl implements AccountRepository {
     private static final String SQL_DELETE_ACCOUNT_BY_ACCOUNT_NUMBER = "DELETE FROM Account WHERE AccountNumber = ?";
     private static final String SQL_CREATE_TRANSACTION = "INSERT INTO AccountTransfer(Amount, FromAccountId, ToAccountId, TransactionTime) VALUES (?,?,?,?)";
 
-    private static final BigDecimal ZERO = new BigDecimal(0).setScale(4, RoundingMode.HALF_EVEN);
+    private static final BigDecimal ZERO = new BigDecimal(0).setScale(2, RoundingMode.HALF_EVEN);
 
-    private static final Logger log = Logger.getLogger(AccountRepositoryImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(AccountRepositoryImpl.class);
 
-    private static final String ID = "ID";
-    private static final String ACCOUNT_HOLDER = "ACCOUNT_HOLDER";
-    private static final String ACCOUNT_NUMBER = "ACCOUNT_NUMBER";
-    private static final String SORT_CODE = "SORT_CODE";
+    private static final String ID = "Id";
+    private static final String ACCOUNT_HOLDER = "AccountHolder";
+    private static final String ACCOUNT_NUMBER = "AccountNumber";
+    private static final String SORT_CODE = "SortCode";
     private static final String BALANCE = "BALANCE";
 
     /**
@@ -94,8 +94,8 @@ public class AccountRepositoryImpl implements AccountRepository {
                         rs.getString(ACCOUNT_NUMBER),
                         rs.getString(SORT_CODE),
                         rs.getBigDecimal(BALANCE));
-                if (log.isDebugEnabled())
-                    log.debug("accessed account with " + account);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("accessed account with " + account);
             }
             return account;
         } catch (SQLException e) {
@@ -124,7 +124,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
-                log.error("unable to create account.");
+                LOGGER.error("unable to create account.");
                 throw new TransactionException("account could not be created.", TransactionException.ResponseCode.FAILURE.name());
             }
             generatedKeys = statement.getGeneratedKeys();
@@ -133,13 +133,13 @@ public class AccountRepositoryImpl implements AccountRepository {
                 account.setId(generatedKeys.getLong(1));
                 return account;
             } else {
-                log.error("unable to create an account, unable to obtain ID.");
+                LOGGER.error("unable to create an account, unable to obtain ID.");
                 throw new TransactionException("account could not be created.", TransactionException.ResponseCode.FAILURE.name());
             }
         } catch (SQLException e) {
-            log.error("error creating account for " + account);
+            LOGGER.error("error creating account for " + account);
             // rollback transaction if exception occurs
-            log.error("rollback initiated for " + account.getAccountNumber(), e);
+            LOGGER.error("rollback initiated for " + account.getAccountNumber(), e);
 
             try {
                 if (conn != null)
@@ -169,7 +169,7 @@ public class AccountRepositoryImpl implements AccountRepository {
             conn.commit();
         } catch (SQLException e) {
             // rollback transaction if exception occurs
-            log.error("rollback initiated for " + accountNumber, e);
+            LOGGER.error("rollback initiated for " + accountNumber, e);
             try {
                 if (conn != null)
                     conn.rollback();
@@ -209,8 +209,8 @@ public class AccountRepositoryImpl implements AccountRepository {
                         rs.getString(SORT_CODE),
                         rs.getBigDecimal(BALANCE));
 
-                if (log.isDebugEnabled())
-                    log.debug("locked account" + targetAccount);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("locked account" + targetAccount);
             }
 
             if (targetAccount == null) {
@@ -235,11 +235,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             updateStatement.executeUpdate();
             conn.commit();
 
-            if (log.isDebugEnabled())
-                log.debug("new balanace after update" + targetAccount);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("new balanace after update" + targetAccount);
         } catch (SQLException se) {
             // rollback transaction if exception occurs
-            log.error("rollback initiated for " + account.getAccountNumber(), se);
+            LOGGER.error("rollback initiated for " + account.getAccountNumber(), se);
             try {
                 if (conn != null)
                     conn.rollback();
@@ -288,8 +288,8 @@ public class AccountRepositoryImpl implements AccountRepository {
                         rs.getString(ACCOUNT_NUMBER),
                         rs.getString(SORT_CODE),
                         rs.getBigDecimal(BALANCE));
-                if (log.isDebugEnabled())
-                    log.debug("locked account " + fromAccount);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("locked account " + fromAccount);
             }
             lockStatment = conn.prepareStatement(SQL_LOCK_ACCOUNT_BY_ACCOUNT_NUMBER);
             lockStatment.setString(1, userTransaction.getToAccountNumber());
@@ -301,8 +301,8 @@ public class AccountRepositoryImpl implements AccountRepository {
                         rs.getString(ACCOUNT_NUMBER),
                         rs.getString(SORT_CODE),
                         rs.getBigDecimal(BALANCE));
-                if (log.isDebugEnabled())
-                    log.debug("locked account " + toAccount);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("locked account " + toAccount);
             }
 
             // check locking status
@@ -314,7 +314,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
             // check there is enough fund in source account
             BigDecimal delta = fromAccount.getBalance().subtract(userTransaction.getAmount());
-            if (delta.compareTo(new BigDecimal(0).setScale(4, RoundingMode.HALF_EVEN)) < 0) {
+            if (delta.compareTo(new BigDecimal(0).setScale(2, RoundingMode.HALF_EVEN)) < 0) {
                 throw new TransactionException("insufficient funds from source.", TransactionException.ResponseCode.FAILURE.name(), accountTransferVO.getFromAccountNumber(), accountTransferVO.getToAccountNumber(), accountTransferVO.getAmount());
             }
 
@@ -328,8 +328,8 @@ public class AccountRepositoryImpl implements AccountRepository {
             int[] rowsUpdated = updateStatement.executeBatch();
             if (rowsUpdated.length > 1)
                 result = rowsUpdated[0] + rowsUpdated[1];
-            if (log.isDebugEnabled()) {
-                log.debug("number of rows updated for the transfer : " + result);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("number of rows updated for the transfer : " + result);
             }
 
             //update the transaction table.
@@ -341,13 +341,13 @@ public class AccountRepositoryImpl implements AccountRepository {
             rowsUpdated = createTransactonStatment.executeBatch();
             if (rowsUpdated.length > 0)
                 result = rowsUpdated[0];
-            if (log.isDebugEnabled()) {
-                log.debug("a new transaction record has been inserted : " + accountTransferVO);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("a new transaction record has been inserted : " + accountTransferVO);
             }
             conn.commit();
         } catch (SQLException se) {
             // rollback transaction if exception occurs
-            log.error("rollback initiated for " + userTransaction, se);
+            LOGGER.error("rollback initiated for " + userTransaction, se);
             try {
                 if (conn != null)
                     conn.rollback();
