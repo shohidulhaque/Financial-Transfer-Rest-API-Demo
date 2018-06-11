@@ -217,7 +217,6 @@ public class AccountRepositoryImpl implements AccountRepository {
                 throw new TransactionException("failed to lock account " + account.getAccountNumber(), TransactionException.ResponseCode.FAILURE.name());
             }
             // update account upon success locking
-            //BigDecimal balance = targetAccount.getBalance().add(account.getBalance());
             if (account.getBalance().compareTo(ZERO) < 0) {
                 throw new TransactionException("not sufficient fonds for " + account.getAccountNumber(), TransactionException.ResponseCode.FAILURE.name());
             }

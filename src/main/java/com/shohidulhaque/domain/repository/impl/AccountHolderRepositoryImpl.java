@@ -157,7 +157,7 @@ public class AccountHolderRepositoryImpl implements AccountHolderRepository {
             }
 
             if (targetAccountHolder == null) {
-                throw new TransactionException("failed to lock account " + targetAccountHolder.getAccountHolderId(), TransactionException.ResponseCode.FAILURE.name());
+                throw new TransactionException("failed to lock account " + accountHolder.getAccountHolderId(), TransactionException.ResponseCode.FAILURE.name());
             }
 
             statement = conn.prepareStatement(SQL_UPDATE_ACCOUNT_HOLDER);
