@@ -22,22 +22,28 @@ import java.util.List;
 
 public class AccountRepositoryImpl implements AccountRepository {
 
-    private final static String SQL_GET_ACCOUNT_BY_ACCOUNT_NUMBER = "SELECT * FROM Account WHERE AccountNumber = ? ";
-    private final static String SQL_LOCK_ACCOUNT_BY_ACCOUNT_NUMBER = "SELECT * FROM Account WHERE AccountNumber = ? FOR UPDATE";
-    private final static String SQL_LOCK_ACCOUNT_BY_ACCOUNT_ID = "SELECT * FROM Account WHERE ID = ? FOR UPDATE";
+    private static final String SQL_GET_ACCOUNT_BY_ACCOUNT_NUMBER = "SELECT * FROM Account WHERE AccountNumber = ? ";
+    private static final String SQL_LOCK_ACCOUNT_BY_ACCOUNT_NUMBER = "SELECT * FROM Account WHERE AccountNumber = ? FOR UPDATE";
+    private static final String SQL_LOCK_ACCOUNT_BY_ACCOUNT_ID = "SELECT * FROM Account WHERE ID = ? FOR UPDATE";
 
-    private final static String SQL_CREATE_ACCOUNT = "INSERT INTO Account (AccountNumber, AccountHolder, SortCode, Balance) VALUES (?, ?, ?, ?)";
+    private static final String SQL_CREATE_ACCOUNT = "INSERT INTO Account (AccountNumber, AccountHolder, SortCode, Balance) VALUES (?, ?, ?, ?)";
 
-    private final static String SQL_UPDATE_ACCOUNT_BALANCE_BY_ACCOUNT_NUMBER = "UPDATE Account SET Balance = ? WHERE AccountNumber = ? ";
+    private static final String SQL_UPDATE_ACCOUNT_BALANCE_BY_ACCOUNT_NUMBER = "UPDATE Account SET Balance = ? WHERE AccountNumber = ? ";
     private final static String SQL_UPDATE_ACCOUNT = "UPDATE Account SET  AccountNumber = ?, SortCode = ?, Balance = ? WHERE Id = ?";
 
-    private final static String SQL_GET_ALL_ACCOUNT = "SELECT * FROM Account";
-    private final static String SQL_DELETE_ACCOUNT_BY_ACCOUNT_NUMBER = "DELETE FROM Account WHERE AccountNumber = ?";
-    private final static String SQL_CREATE_TRANSACTION = "INSERT INTO AccountTransfer(Amount, FromAccountId, ToAccountId, TransactionTime) VALUES (?,?,?,?)";
+    private static final String SQL_GET_ALL_ACCOUNT = "SELECT * FROM Account";
+    private static final String SQL_DELETE_ACCOUNT_BY_ACCOUNT_NUMBER = "DELETE FROM Account WHERE AccountNumber = ?";
+    private static final String SQL_CREATE_TRANSACTION = "INSERT INTO AccountTransfer(Amount, FromAccountId, ToAccountId, TransactionTime) VALUES (?,?,?,?)";
 
-    private final static BigDecimal ZERO = new BigDecimal(0).setScale(4, RoundingMode.HALF_EVEN);
+    private static final BigDecimal ZERO = new BigDecimal(0).setScale(4, RoundingMode.HALF_EVEN);
 
-    private static Logger log = Logger.getLogger(AccountRepositoryImpl.class);
+    private static final Logger log = Logger.getLogger(AccountRepositoryImpl.class);
+
+    private static final String Id = "Id";
+    private static final String AccountHolder = "AccountHolder";
+    private static final String AccountNumber = "AccountNumber";
+    private static final String SortCode = "SortCode";
+    private static final String Balance = "Balance";
 
     /**
      * Get all accounts.
@@ -46,18 +52,18 @@ public class AccountRepositoryImpl implements AccountRepository {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        List<Account> allAccounts = new ArrayList<Account>();
+        List<Account> allAccounts = new ArrayList<>();
         try {
             conn = RepositoryFactory.getConnection();
             stmt = conn.prepareStatement(SQL_GET_ALL_ACCOUNT);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 Account acc = new Account(
-                        rs.getLong("Id"),
-                        rs.getLong("AccountHolder"),
-                        rs.getString("AccountNumber"),
-                        rs.getString("SortCode"),
-                        rs.getBigDecimal("Balance"));
+                        rs.getLong(Id),
+                        rs.getLong(AccountHolder),
+                        rs.getString(AccountNumber),
+                        rs.getString(SortCode),
+                        rs.getBigDecimal(Balance));
                 allAccounts.add(acc);
             }
             return allAccounts;
@@ -83,11 +89,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             rs = statement.executeQuery();
             if (rs.next()) {
                 account = new Account(
-                        rs.getLong("Id"),
-                        rs.getLong("AccountHolder"),
-                        rs.getString("AccountNumber"),
-                        rs.getString("SortCode"),
-                        rs.getBigDecimal("Balance"));
+                        rs.getLong(Id),
+                        rs.getLong(AccountHolder),
+                        rs.getString(AccountNumber),
+                        rs.getString(SortCode),
+                        rs.getBigDecimal(Balance));
                 if (log.isDebugEnabled())
                     log.debug("accessed account with " + account);
             }
@@ -196,11 +202,13 @@ public class AccountRepositoryImpl implements AccountRepository {
             rs = lockStatement.executeQuery();
             if (rs.next()) {
                 targetAccount = new Account(
-                        rs.getLong("Id"),
-                        rs.getLong("AccountHolder"),
-                        rs.getString("AccountNumber"),
-                        rs.getString("SortCode"),
-                        rs.getBigDecimal("Balance"));
+
+                        rs.getLong(Id),
+                        rs.getLong(AccountHolder),
+                        rs.getString(AccountNumber),
+                        rs.getString(SortCode),
+                        rs.getBigDecimal(Balance));
+
                 if (log.isDebugEnabled())
                     log.debug("locked account" + targetAccount);
             }
@@ -276,11 +284,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             rs = lockStatment.executeQuery();
             if (rs.next()) {
                 fromAccount = new Account(
-                        rs.getLong("Id"),
-                        rs.getLong("AccountHolder"),
-                        rs.getString("AccountNumber"),
-                        rs.getString("SortCode"),
-                        rs.getBigDecimal("Balance"));
+                        rs.getLong(Id),
+                        rs.getLong(AccountHolder),
+                        rs.getString(AccountNumber),
+                        rs.getString(SortCode),
+                        rs.getBigDecimal(Balance));
                 if (log.isDebugEnabled())
                     log.debug("locked account " + fromAccount);
             }
@@ -289,11 +297,11 @@ public class AccountRepositoryImpl implements AccountRepository {
             rs = lockStatment.executeQuery();
             if (rs.next()) {
                 toAccount = new Account(
-                        rs.getLong("Id"),
-                        rs.getLong("AccountHolder"),
-                        rs.getString("AccountNumber"),
-                        rs.getString("SortCode"),
-                        rs.getBigDecimal("Balance"));
+                        rs.getLong(Id),
+                        rs.getLong(AccountHolder),
+                        rs.getString(AccountNumber),
+                        rs.getString(SortCode),
+                        rs.getBigDecimal(Balance));
                 if (log.isDebugEnabled())
                     log.debug("locked account " + toAccount);
             }

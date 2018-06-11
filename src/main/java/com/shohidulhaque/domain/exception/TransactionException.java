@@ -7,12 +7,12 @@ import java.math.BigDecimal;
  */
 public class TransactionException extends Exception {
 
-    String responseCode;
-    long fromId;
-    String fromAccountNumber;
-    long toId;
-    String toAccountNumber;
-    BigDecimal amount;
+    final String responseCode;
+    final long fromId;
+    final String fromAccountNumber;
+    final long toId;
+    final String toAccountNumber;
+    final BigDecimal amount;
     public TransactionException(String msg, String responseCode) {
         this(msg, responseCode, -1, null, -1, null, null, null);
     }
